@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>ser</title>
+<!--     <script src="p5.js"></script> -->
+<!--     <script src="p5.serialport.js"></script> -->
+    <script src="./script.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+  </head>
+  <body>
+
+  <input type=text id="in_cmd" list=sample_cmds  ></input>
+  <input type=button value="send" onclick="btn_send()"></input>
+  <datalist id="sample_cmds">
+  <option value='{"head":"142","data":[-1]}'>
+  <option value=''>
+  <option value=''>
+  <option value=''>
+  <option value=''>
+  </datalist>
+  <input type=text id="in_tele" list=teles  ></input>
+  <input type=button value="en" onclick='com_send("cmd",`{"head":"61","data":[${byId("in_tele").value}]}`)'></input>
+  <input type=button value="dis" onclick='com_send("cmd",`{"head":"63","data":[${byId("in_tele").value}]}`)'></input>
+  <datalist id="teles">
+  <option value='0'>
+  <option value='2'>
+  <option value='7'>
+  <option value='52'>
+  <option value='54'>
+  </datalist>
+  <br>
+  <label> Serial: </label>
+  <input type=button value="con" onclick='serial_connect(115200,true)'></input>
+  <input type=button value="dis" onclick='serial_disconnect()'></input>
+  <input type=checkbox id="log_msg" checked>log_msg</input>
+  <input type=checkbox id="log_rsp" checked>log_rsp</input>
+  <input type=checkbox id="log_cmd" checked>log_cmd</input>
+  <input type=checkbox id="log_dbg" checked>log_dbg</input>
+  <br>
+  <textarea id="serlog" cols=120 rows=50></textarea>
+
+<script>
+byId=(id)=>{return document.getElementById(id);};
+
+function btn_send(){
+  com_send('cmd',byId('in_cmd').value);
+}
+com_recieve = ({ from, subject, body }) => {
+
+  if(subject == 'cmd'){
+    let x = JSON.parse(body);
+    if ((!edrys_mode || Edrys.role == 'station') && connected) serial_write(enc_command(x));
+    else if(byId("log_cmd").checked) log("cmd:\t", JSTR(x));
+  }
+  if (subject== 'rsp'){
+    let x = JSON.parse(body);
+    if(rsp_interprete) rsp_interprete(x);
+    if(byId("log_rsp").checked) log("rsp:\t", JSTR(x));
+  }
+  if (subject== 'msg'){
+    // msg do not need JSON
+    let x = (body);
+    if(byId("log_msg").checked) log(x);
+  }
+  if (subject== 'dbg'){
+    // dbg messages are not interpreted
+    let x = body;
+    if(byId("log_dbg").checked) log("dbg:\t", (x));
+  }
+}
+// init(){
+/*Edrys.onReady(()=>{
+/*Edrys.onMessage(com_recieve)
+})*/
+// }
+</script>
+  </body>
+</html>
