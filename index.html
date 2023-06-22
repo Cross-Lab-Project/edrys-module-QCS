@@ -5,6 +5,7 @@
     <title>ser</title>
 <!--     <script src="p5.js"></script> -->
 <!--     <script src="p5.serialport.js"></script> -->
+    <script src="https://edrys-org.github.io/edrys/module/edrys.js"></script>
     <script src="./script.js"></script>
     <style>
         body {
@@ -14,7 +15,7 @@
     </style>
   </head>
   <body>
-
+  dadudm
   <input type=button value="STOP" onclick='com_send("cmd",`{"head":"142","data":[-1]}`)'></input>
 
   <input type=text id="in_cmd" list=sample_cmds  ></input>
@@ -38,14 +39,14 @@
   </datalist>
   <br>
   <label> Serial: </label>
-  <input type=button value="con" onclick='serial_connect(115200,true)'></input>
+  <input type=button value="con" onclick='serial_connect(57600,true)'></input>
   <input type=button value="dis" onclick='serial_disconnect()'></input>
   <input type=checkbox id="log_msg" checked>log_msg</input>
   <input type=checkbox id="log_rsp" checked>log_rsp</input>
   <input type=checkbox id="log_cmd" checked>log_cmd</input>
   <input type=checkbox id="log_dbg" checked>log_dbg</input>
   <br>
-  control <!--"142" + 17 floats-->
+  cmd142 <!--"142" + 17 floats-->
   <div id="cmd142_fields">
   </div>
   <script>
@@ -110,8 +111,18 @@ com_recieve = ({ from, subject, body }) => {
     if(byId("log_dbg").checked) log("dbg:\t", (x));
   }
 }
+
+Edrys.onReady(
+            (e) => {
+                edrys = {...e}
+                edrys_mode = true
+                Edrys.onMessage(com_recieve)
+
+            }
+)
+
 // init(){
-/*Edrys.onReady(()=>{
+/*Edrys.onReady((e)=>{
 /*Edrys.onMessage(com_recieve)
 })*/
 // }
