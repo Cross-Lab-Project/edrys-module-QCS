@@ -15,6 +15,8 @@
   </head>
   <body>
 
+  <input type=button value="STOP" onclick='com_send("cmd",`{"head":"142","data":[-1]}`)'></input>
+
   <input type=text id="in_cmd" list=sample_cmds  ></input>
   <input type=button value="send" onclick="btn_send()"></input>
   <datalist id="sample_cmds">
@@ -42,6 +44,40 @@
   <input type=checkbox id="log_rsp" checked>log_rsp</input>
   <input type=checkbox id="log_cmd" checked>log_cmd</input>
   <input type=checkbox id="log_dbg" checked>log_dbg</input>
+  <br>
+  control <!--"142" + 17 floats-->
+  <div id="cmd142_fields">
+  </div>
+  <script>
+  let t = document.getElementById("cmd142_fields");
+  cmd142_inputs=[]
+  for(i =0 ;i<17;i++){
+    let e=document.createElement("input")
+    cmd142_inputs.push(e)
+    e.type="number";
+    e.step=0.001
+    e.value=0
+    e.id="cmd142_f"+i
+    t.appendChild(e);
+    e.onchange=()=>{cmd142()}
+    //document.writeln(' <input type=number value=0 step=".001" id="f'+ i+'" size=5 onchange="cmd142()">')
+  }
+  {
+    let e=document.createElement("input")
+    e.type="checkbox";
+    e.id="a_snd_142"
+    e.onchange=()=>{cmd142()}
+    t.appendChild(e)
+  }
+  function cmd142(){
+    if (!document.getElementById("a_snd_142").checked) return;
+    let vals=[]
+    cmd142_inputs.forEach((x)=>{vals.push(x.value)})
+    com_send("cmd",`{"head":"142","data":${JSTR(vals)}}`)
+    // console.log(JSTR(vals))
+  }
+
+  </script>
   <br>
   <textarea id="serlog" cols=120 rows=50></textarea>
 
