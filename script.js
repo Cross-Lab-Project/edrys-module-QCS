@@ -125,7 +125,7 @@ function FrameDec(x){
     let i = 0;
     for(; i < 6; i++)
         ret.head.push(dv.getUint8(i));
-    for(; i < dv.byteLength; i += 4)
+    for(; i < dv.byteLength - 4; i += 4)
         ret.data.push(dv.getFloat32(i));
     return ret
 }
@@ -152,7 +152,13 @@ frameReader = {
                 //frame complete
                 let fbu8 = new Uint8Array( new ArrayBuffer(this.frame.length));
                 fbu8.set(this.frame);
-
+                let f
+                try{
+                f = FrameDec(fbu8);
+                } catch({e, msg}) {
+                    com_send("dbg",msg)
+                    com_send("dbg",JSON.stringify(fbu8))
+                }
                 this.recvd_frame(JSON.stringify(FrameDec(fbu8)))
 
                 this.frame = null;

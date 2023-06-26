@@ -15,7 +15,7 @@
     </style>
   </head>
   <body>
-  dadudm
+  ein flasche pommes2
   <input type=button value="STOP" onclick='com_send("cmd",`{"head":"142","data":[-1]}`)'></input>
 
   <input type=text id="in_cmd" list=sample_cmds  ></input>
@@ -97,7 +97,7 @@ com_recieve = ({ from, subject, body }) => {
   }
   if (subject== 'rsp'){
     let x = JSON.parse(body);
-    if(rsp_interprete) rsp_interprete(x);
+    // if(rsp_interprete) rsp_interprete(x);
     if(byId("log_rsp").checked) log("rsp:\t", JSTR(x));
   }
   if (subject== 'msg'){
